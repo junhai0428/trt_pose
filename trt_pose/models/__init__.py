@@ -3,6 +3,8 @@ from .densenet import *
 from .mnasnet import *
 # from .dla import *
 
+from .mobilenet import *
+
 MODELS = {
     'resnet18_baseline': resnet18_baseline,
     'resnet34_baseline': resnet34_baseline,
@@ -30,4 +32,7 @@ MODELS = {
     'mnasnet0_75_baseline_att': mnasnet0_75_baseline_att,
     'mnasnet1_0_baseline_att': mnasnet1_0_baseline_att,
     'mnasnet1_3_baseline_att': mnasnet1_3_baseline_att,
+
+    'mobilenet_baseline_att': mobilenet_baseline_att,
+    'mobilenet_baseline': mobilenet_baseline,
 }

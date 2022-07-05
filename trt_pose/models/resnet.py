@@ -57,14 +57,6 @@ def resnet152_baseline(cmap_channels, paf_channels, upsample_channels=256, pretr
     return _resnet_pose(cmap_channels, paf_channels, upsample_channels, resnet, 2048, num_upsample, num_flat)
 
 
-def _resnet_pose(cmap_channels, paf_channels, upsample_channels, resnet, feature_channels, num_upsample, num_flat):
-    model = torch.nn.Sequential(
-        ResNetBackbone(resnet),
-        CmapPafHead(feature_channels, cmap_channels, paf_channels, upsample_channels, num_upsample=num_upsample, num_flat=num_flat)
-    )
-    return model
-  
-    
 def _resnet_pose_att(cmap_channels, paf_channels, upsample_channels, resnet, feature_channels, num_upsample, num_flat):
     model = torch.nn.Sequential(
         ResNetBackbone(resnet),

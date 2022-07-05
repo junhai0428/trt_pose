@@ -49,7 +49,6 @@ def densenet161_baseline(cmap_channels, paf_channels, upsample_channels=256, pre
     densenet = torchvision.models.densenet161(pretrained=pretrained)
     return _densenet_pose(cmap_channels, paf_channels, upsample_channels, densenet, 2208, num_upsample, num_flat)
 
-
     
 def densenet121_baseline_att(cmap_channels, paf_channels, upsample_channels=256, pretrained=True, num_upsample=3, num_flat=0):
     densenet = torchvision.models.densenet121(pretrained=pretrained)
