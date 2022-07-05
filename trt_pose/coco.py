@@ -6,7 +6,7 @@ import PIL.Image
 import json
 import tqdm
 import trt_pose
-import trt_pose.plugins
+import trt_pose.models
 import glob
 import torchvision.transforms.functional as FT
 import numpy as np

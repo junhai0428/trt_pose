@@ -1,6 +1,6 @@
 {
     "train_dataset": {
-        "images_dir": "train2017",
+        "images_dir": "/media/nio/storage/coco/train2017",
         "annotations_file": "annotations/person_keypoints_train2017_modified.json",
         "category_name": "person",
         "image_shape": [320, 320],
@@ -21,7 +21,7 @@
         "hue": 0.01
     },
     "test_dataset": {
-        "images_dir": "val2017",
+        "images_dir": "/media/nio/storage/coco/val2017",
         "annotations_file": "annotations/person_keypoints_val2017_modified.json",
         "category_name": "person",
         "image_shape": [320, 320],
@@ -33,13 +33,13 @@
         "random_translate": [-0.0, 0.0]
     },
     "train_loader": {
-        "batch_size": 64,
+        "batch_size": 32,
         "shuffle": true,
         "num_workers": 8,
         "pin_memory": true
     },
     "test_loader": {
-        "batch_size": 64,
+        "batch_size": 32,
         "shuffle": true,
         "num_workers": 8,
         "pin_memory": true

@@ -1,4 +1,4 @@
-import trt_pose.plugins
+import trt_pose.models
 
 
 class ParseObjects(object):
