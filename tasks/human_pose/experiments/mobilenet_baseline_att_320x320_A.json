@@ -33,15 +33,15 @@
         "random_translate": [-0.0, 0.0]
     },
     "train_loader": {
-        "batch_size": 32,
+        "batch_size": 64,
         "shuffle": true,
-        "num_workers": 8,
+        "num_workers": 12,
         "pin_memory": true
     },
     "test_loader": {
-        "batch_size": 32,
+        "batch_size": 64,
         "shuffle": true,
-        "num_workers": 8,
+        "num_workers": 12,
         "pin_memory": true
     },
     "model": {
@@ -59,7 +59,7 @@
             "lr": 1e-3
         }
     },
-    "epochs": 250,
+    "epochs": 150,
     "lr_schedule": {
         "0": 0.001,
         "75": 0.0001,

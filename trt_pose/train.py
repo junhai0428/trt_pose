@@ -100,21 +100,30 @@ if __name__ == '__main__':
     )
     
     model = MODELS[config['model']['name']](**config['model']['kwargs']).to(device)
-    
+
     if "initial_state_dict" in config['model']:
         print('Loading initial weights from %s' % config['model']['initial_state_dict'])
         model.load_state_dict(torch.load(config['model']['initial_state_dict']))
     
     optimizer = OPTIMIZERS[config['optimizer']['name']](model.parameters(), **config['optimizer']['kwargs'])
     model, optimizer = amp.initialize(model, optimizer, opt_level="O1")
-    
+
+    # ******************************************************************************
+    # device_ids = [0, 1, 2, 3]
+    model = torch.nn.DataParallel(model, device_ids=[0, 1])
+    # model.load_state_dict(torch.load('/media/nio/storage/pip/trt_pose/tasks/human_pose/experiments'
+    #                                  '/mobilenet_baseline_att_320x320_A.json.checkpoints/epoch_80.pth'))
+
+    # model= model.cuda()
+    # ******************************************************************************
+
     if 'mask_unlabeled' in config and config['mask_unlabeled']:
         print('Masking unlabeled annotations')
         mask_unlabeled = True
     else:
         mask_unlabeled = False
         
-    for epoch in range(config["epochs"]):
+    for epoch in range(0, config["epochs"]):
         
         if str(epoch) in config['stdev_schedule']:
             stdev = config['stdev_schedule'][str(epoch)]
@@ -129,11 +138,10 @@ if __name__ == '__main__':
         
         if epoch % config['checkpoints']['interval'] == 0:
             save_checkpoint(model, checkpoint_dir, epoch)
-        
-           
-        
+
         train_loss = 0.0
         model = model.train()
+        device = torch.device("cuda", 0)
         for image, cmap, paf, mask in tqdm.tqdm(iter(train_loader)):
             image = image.to(device)
             cmap = cmap.to(device)
@@ -186,7 +194,6 @@ if __name__ == '__main__':
         test_loss /= len(test_loader)
         
         write_log_entry(logfile_path, epoch, train_loss, test_loss)
-        
-        
+
         if 'evaluation' in config:
             evaluator.evaluate(model, train_dataset.topology)
