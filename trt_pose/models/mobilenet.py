@@ -25,8 +25,8 @@ def _mobilenet_pose(cmap_channels, paf_channels, upsample_channels, mobilenet, f
     
     
 def mobilenet_baseline(cmap_channels, paf_channels, upsample_channels=256, num_upsample=3, num_flat=0):
-    mobilenet = torchvision.models.mobilenet_v3_small(torchvision.models.MobileNet_V3_Small_Weights)
-    return _mobilenet_pose(cmap_channels, paf_channels, upsample_channels, mobilenet, 576, num_upsample, num_flat)
+    mobilenet = torchvision.models.mobilenet_v3_large(weights=torchvision.models.MobileNet_V3_Large_Weights.DEFAULT)
+    return _mobilenet_pose(cmap_channels, paf_channels, upsample_channels, mobilenet, 960, num_upsample, num_flat)
   
     
 def _mobilenet_pose_att(cmap_channels, paf_channels, upsample_channels, mobilenet, feature_channels, num_upsample, num_flat):
@@ -38,5 +38,5 @@ def _mobilenet_pose_att(cmap_channels, paf_channels, upsample_channels, mobilene
 
     
 def mobilenet_baseline_att(cmap_channels, paf_channels, upsample_channels=256, num_upsample=3, num_flat=0):
-    mobilenet = torchvision.models.mobilenet_v3_small(torchvision.models.MobileNet_V3_Small_Weights)
-    return _mobilenet_pose_att(cmap_channels, paf_channels, upsample_channels, mobilenet, 576, num_upsample, num_flat)
+    mobilenet = torchvision.models.mobilenet_v3_large(weights=torchvision.models.MobileNet_V3_Large_Weights.DEFAULT)
+    return _mobilenet_pose_att(cmap_channels, paf_channels, upsample_channels, mobilenet, 960, num_upsample, num_flat)

@@ -20,6 +20,7 @@ OPTIMIZERS = {
 
 EPS = 1e-6
 
+
 def set_lr(optimizer, lr):
     for p in optimizer.param_groups:
         p['lr'] = lr
@@ -38,7 +39,8 @@ def write_log_entry(logfile, epoch, train_loss, test_loss):
         logline = '%d, %f, %f' % (epoch, train_loss, test_loss)
         print(logline)
         f.write(logline + '\n')
-        
+
+
 device = torch.device('cuda')
 
 if __name__ == '__main__':
@@ -58,8 +60,7 @@ if __name__ == '__main__':
     if not os.path.exists(checkpoint_dir):
         print('Creating checkpoint directory % s' % checkpoint_dir)
         os.mkdir(checkpoint_dir)
-    
-        
+
     # LOAD DATASETS
     
     train_dataset_kwargs = config["train_dataset"]
@@ -109,11 +110,9 @@ if __name__ == '__main__':
     model, optimizer = amp.initialize(model, optimizer, opt_level="O1")
 
     # ******************************************************************************
-    # device_ids = [0, 1, 2, 3]
-    model = torch.nn.DataParallel(model, device_ids=[0, 1])
+    model = torch.nn.DataParallel(model, device_ids=[0, 1, 2])
     # model.load_state_dict(torch.load('/media/nio/storage/pip/trt_pose/tasks/human_pose/experiments'
     #                                  '/mobilenet_baseline_att_320x320_A.json.checkpoints/epoch_80.pth'))
-
     # model= model.cuda()
     # ******************************************************************************
 

@@ -18,7 +18,6 @@ OPTIMIZERS = {
     'Adam': torch.optim.Adam
 }
 
-
 device = torch.device('cuda')
 
 if __name__ == '__main__':
@@ -37,9 +36,9 @@ if __name__ == '__main__':
     model, optimizer = amp.initialize(model, optimizer, opt_level="O1")
 
     # ******************************************************************************
-    model = torch.nn.DataParallel(model, device_ids=[0, 1])
+    model = torch.nn.DataParallel(model, device_ids=[2])
     model.load_state_dict(torch.load('/media/nio/storage/pip/trt_pose/tasks/human_pose/experiments'
-                                     '/mobilenet_baseline_att_320x320_A.json.checkpoints/epoch_140.pth'))
+                                     '/mobilenet_baseline_att_320x320_A.json.checkpoints/epoch_60.pth'))
     # ******************************************************************************
 
     model = model.eval()
