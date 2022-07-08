@@ -4,7 +4,7 @@ from .mnasnet import *
 # from .dla import *
 
 from .mobilenet import *
-from .efficientnet import *
+from .shufflenet import *
 
 MODELS = {
     'resnet18_baseline': resnet18_baseline,
@@ -36,6 +36,6 @@ MODELS = {
 
     'mobilenet_baseline_att': mobilenet_baseline_att,
     'mobilenet_baseline': mobilenet_baseline,
-    'efficientnet_baseline_att': efficientnet_baseline_att,
-    'efficientnet_baseline': efficientnet_baseline,
+    'shufflenet_baseline_att': shufflenet_baseline_att,
+    'shufflenet_baseline': shufflenet_baseline,
 }
