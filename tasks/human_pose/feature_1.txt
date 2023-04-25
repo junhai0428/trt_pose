@@ -1,2 +1,0 @@
-/home/junhai_yang/pip/images/input/20221209-125713.jpg
->>>>>>>>>>>>>>>>>>>>>>>>>>>> torch.Size([1, 3, 320, 320])

@@ -1,0 +1,7 @@
+build
+dist
+trt_pose.egg-info
+*.pt
+*.pth
+*.onnx
+*.engine

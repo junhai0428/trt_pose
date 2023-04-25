@@ -5,6 +5,7 @@
 
 import os
 import json
+import time
 from glob import glob
 
 import numpy as np
@@ -21,58 +22,72 @@ from trt_pose.parse_objects import ParseObjects
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 device = torch.device('cuda')
 
-with open('human_pose.json', 'r') as f:
-    human_pose = json.load(f)
-
-topology = trt_pose.coco.coco_category_to_topology(human_pose)
-parse_objects = ParseObjects(topology, cmap_threshold=0.1, link_threshold=0, cmap_window=5,
-                                 line_integral_samples=7, max_num_parts=100, max_num_objects=100)
-draw_objects = DrawObjects(topology)
-
-num_parts = len(human_pose['keypoints'])
-num_links = len(human_pose['skeleton'])
-model = trt_pose.models.densenet121_baseline_att(num_parts, 2 * num_links).to(device).eval()
-MODEL_WEIGHTS = 'epoch_249.pth'
-model.load_state_dict(torch.load(MODEL_WEIGHTS))
-
-mean = torch.Tensor([0.485, 0.456, 0.406]).to(device)
-std = torch.Tensor([0.229, 0.224, 0.225]).to(device)
 
 def preprocess(image):
+    mean = torch.Tensor([0.485, 0.456, 0.406]).to(device)
+    std = torch.Tensor([0.229, 0.224, 0.225]).to(device)
+
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    image = cv2.resize(image, (320, 320), interpolation=cv2.INTER_AREA)
-    image = PIL.Image.fromarray(image)
     image = transforms.functional.to_tensor(image).to(device)
     image.sub_(mean[:, None, None]).div_(std[:, None, None])
     return image[None, ...]
 
 
-def execute(image_path, output_path):
-    with torch.no_grad():
-        out_path = os.path.join(output_path, os.path.basename(image_path))
-        image = cv2.imread(image_path)
-        data = preprocess(image)
+class PytorchPredictor:
+    def __init__(self, model_path, config=None) -> None:
+        with open(config, 'r') as f:
+            human_pose = json.load(f)
 
-        cmap, paf = model(data)
-        cmap, paf = cmap.detach().cpu(), paf.detach().cpu()
+        topology = trt_pose.coco.coco_category_to_topology(human_pose)
+        # parse_objects = ParseObjects(topology, cmap_threshold=0.4, link_threshold=0.4, cmap_window=5,
+        #                                  line_integral_samples=7, max_num_parts=100, max_num_objects=100)
+        self.parse_objects = ParseObjects(topology, cmap_threshold=0.4, link_threshold=0.4, cmap_window=5,
+                                        line_integral_samples=7, max_num_parts=100, max_num_objects=100)
+        self.draw_objects = DrawObjects(topology)
 
-        counts, objects, peaks = parse_objects(cmap, paf, )
-        draw_objects(image, counts, objects, peaks)
-        cv2.imwrite(out_path, image)
-        
-        # cmap, paf = cmap.detach().cpu().squeeze().numpy(), paf.detach().cpu().squeeze().numpy()
-        # print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>", cmap.shape, paf.shape)
-        # for i, feature in enumerate(cmap):
-        #     print(type(feature))
-        #     print(feature.shape)
-        #     print(feature.max(), feature.min())
-        #     feature = 255 * (feature - feature.min()) / (feature.max() - feature.min())
-        #     cv2.imwrite(f"/home/junhai_yang/pip/images/feature_{i+1}.jpg", feature.astype(np.uint8))
-            # break
+        num_parts = len(human_pose['keypoints'])
+        num_links = len(human_pose['skeleton'])
+
+        self.model = trt_pose.models.densenet121_baseline_att(num_parts, 2 * num_links).to(device).eval()
+        self.model.load_state_dict(torch.load(model_path))
+
+    def inference(self, input_path, output_path):
+
+        with torch.no_grad():
+            image = cv2.imread(input_path)
+            start = time.time()
+            data = preprocess(image)
+            print("preprocess time: ", time.time() - start)
+
+            cmap, paf = self.model(data)
+            cmap, paf = cmap.detach().cpu(), paf.detach().cpu()
+            np.save("cmap", cmap)
+            np.save("paf", paf)
+            print(type(cmap), type(paf))
+            print(cmap.shape, paf.shape)
 
 
-input_path = "/home/junhai_yang/pip/images/input/*.jpg"
-output_path = "/home/junhai_yang/pip/images/output"
-for file in glob(input_path):
-    print(file)
-    execute(file, output_path)
+            counts, objects, peaks = self.parse_objects(cmap, paf, )
+            self.draw_objects(image, counts, objects, peaks)
+            cv2.imwrite(output_path, image)
+            
+            # cmap, paf = cmap.detach().cpu().squeeze().numpy(), paf.detach().cpu().squeeze().numpy()
+            # print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>", cmap.shape, paf.shape)
+            # for i, feature in enumerate(cmap):
+            #     print(type(feature))
+            #     print(feature.shape)
+            #     print(feature.max(), feature.min())
+            #     feature = 255 * (feature - feature.min()) / (feature.max() - feature.min())
+            #     cv2.imwrite(f"/home/junhai_yang/pip/images/feature_{i+1}.jpg", feature.astype(np.uint8))
+                # break
+        return cmap.numpy()
+
+if __name__ == "__main__":
+    predictor = PytorchPredictor("epoch_249.pth", 'human_pose.json')
+    input_dir = "/home/junhai.yang/pip/images/input/*.jp*g"
+    output_dir = "/home/junhai.yang/pip/images/output"
+    for input in glob(input_dir):
+        out_path = os.path.join(output_dir, os.path.basename(input))
+        print("%s --> %s" % (input, out_path))
+        predictor.inference(input, out_path)
+    del predictor

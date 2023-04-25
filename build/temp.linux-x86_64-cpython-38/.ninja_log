@@ -1,9 +1,0 @@
-# ninja log v5
-1	64	1670319767727441973	/home/nio/junhai.yang/trt_pose/build/temp.linux-x86_64-cpython-38/trt_pose/parse/refine_peaks.o	35a8d1b24a337155
-0	72	1670319767735441910	/home/nio/junhai.yang/trt_pose/build/temp.linux-x86_64-cpython-38/trt_pose/parse/find_peaks.o	5d9d23de652e378e
-1	113	1670319767775441588	/home/nio/junhai.yang/trt_pose/build/temp.linux-x86_64-cpython-38/trt_pose/parse/paf_score_graph.o	b4d781afd7bcddde
-0	224	1670319767887440692	/home/nio/junhai.yang/trt_pose/build/temp.linux-x86_64-cpython-38/trt_pose/parse/connect_parts.o	a59db3723e0289f4
-1	603	1670319768267437645	/home/nio/junhai.yang/trt_pose/build/temp.linux-x86_64-cpython-38/trt_pose/parse/munkres.o	87d89fb074c14933
-2	21313	1670319788943269411	/home/nio/junhai.yang/trt_pose/build/temp.linux-x86_64-cpython-38/trt_pose/train/generate_cmap.o	3a66fe1e1367c842
-2	21507	1670319789143267761	/home/nio/junhai.yang/trt_pose/build/temp.linux-x86_64-cpython-38/trt_pose/train/generate_paf.o	1f727c6319ddc29f
-2	22702	1670319790335257915	/home/nio/junhai.yang/trt_pose/build/temp.linux-x86_64-cpython-38/trt_pose/plugins.o	3764c1d92d85a2aa
